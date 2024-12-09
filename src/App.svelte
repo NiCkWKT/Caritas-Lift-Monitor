@@ -1,6 +1,5 @@
 <script>
   import { onMount, onDestroy } from "svelte";
-  import { binaryCode } from "./lib/shared.svelte";
   import Arrow from "./lib/Arrow.svelte";
   import BottomBar from "./lib/BottomBar.svelte";
   import DateTime from "./lib/DateTime.svelte";
@@ -9,6 +8,11 @@
 
   let ws;
   let binary_2c = $state("00000000");
+  let binary_2d = $state("00000000");
+  let binary_2e = $state("00000000");
+  let binary_2f = $state("00000000");
+
+  let bottomBars = $state([0, 0, 0, 0, 0, 0, 0, 0]);
 
   onMount(() => {
     connectWebSocket();
@@ -20,6 +24,37 @@
     }
   });
 
+  function extract2dBottomBarFlags() {
+    const value = parseInt(binary_2d, 2);
+    const arrFlag0 = (value >> 4) & 1;
+    const arrFlag1 = (value >> 5) & 1;
+
+    bottomBars[0] = arrFlag0 == 1 ? 1 : 0;
+    bottomBars[1] = arrFlag1 == 1 ? 1 : 0;
+  }
+
+  function extract2eBottomBarFlags() {
+    const value = parseInt(binary_2e, 2);
+    const arrFlag2 = (value >> 2) & 1;
+
+    bottomBars[2] = arrFlag2 == 1 ? 1 : 0;
+  }
+
+  function extract2fBottomBarFlags() {
+    const value = parseInt(binary_2f, 2);
+    const arrFlag3 = (value >> 3) & 1;
+    const arrFlag4 = (value >> 4) & 1;
+    const arrFlag5 = (value >> 5) & 1;
+    const arrFlag6 = (value >> 6) & 1;
+    const arrFlag7 = (value >> 7) & 1;
+
+    bottomBars[3] = arrFlag3 == 1 ? 1 : 0;
+    bottomBars[4] = arrFlag4 == 1 ? 1 : 0;
+    bottomBars[5] = arrFlag5 == 1 ? 1 : 0;
+    bottomBars[6] = arrFlag6 == 1 ? 1 : 0;
+    bottomBars[7] = arrFlag7 == 1 ? 1 : 0;
+  }
+
   function connectWebSocket() {
     ws = new WebSocket("ws://localhost:8080/ws");
 
@@ -30,15 +65,32 @@
     ws.onmessage = (event) => {
       const [control, binaryValue] = event.data.split(",");
       console.log(`Control bit: ${control}, Value: ${binaryValue}`);
-      if (control === "2c") {
-        if (binaryValue !== binary_2c) {
-          binary_2c = binaryValue;
-          console.log(`HiHiHI ${binary_2c}`);
-        }
-      } else if (control === "2d") {
-        if (binaryValue !== binaryCode.binary_2d) {
-          binaryCode.binary_2d = binaryValue;
-        }
+      switch (control) {
+        case "2c":
+          if (binaryValue !== binary_2c) {
+            binary_2c = binaryValue;
+          }
+          break;
+        case "2d":
+          if (binaryValue !== binary_2d) {
+            binary_2d = binaryValue;
+            extract2dBottomBarFlags();
+          }
+          break;
+        case "2e":
+          if (binaryValue !== binary_2e) {
+            binary_2e = binaryValue;
+            extract2eBottomBarFlags();
+          }
+          break;
+        case "2f":
+          if (binaryValue !== binary_2f) {
+            binary_2f = binaryValue;
+            extract2fBottomBarFlags();
+          }
+          break;
+        default:
+          console.log(`Error in WebSocket backend, data: ${event.data}`);
       }
     };
 
@@ -61,14 +113,16 @@
         {#key binary_2c}
           <FloorDisplay {binary_2c} />
         {/key}
-        <p>{binary_2c}</p>
+        <!-- <p>{binary_2c}</p> -->
         <DateTime />
       </div>
     </div>
     <div class="middle">
       <div class="top-bar"></div>
       <img class="zone-table" src="/zones/zone1.png" />
-      <BottomBar />
+      {#key bottomBars}
+        <BottomBar {bottomBars} />
+      {/key}
     </div>
     <div class="right">
       <FloorInfo />
@@ -137,15 +191,6 @@
   }
 
   .right {
-    width: 1024px;
-    height: 768px;
-    position: absolute;
-    left: 1024px;
-    top: calc(50% - 384px);
-    object-fit: cover;
-  }
-
-  .floor-info {
     width: 1024px;
     height: 768px;
     position: absolute;

@@ -1,7 +1,4 @@
 <script>
-  import { onMount } from "svelte";
-  import { binaryCode } from "./shared.svelte.js";
-
   const floorMapping = {
     "000001": "G.png",
     "000010": "1.png",
