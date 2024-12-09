@@ -110,11 +110,12 @@
   <div class="zone">
     <div class="left">
       <div class="components">
-        <Arrow />
+        {#key [binary_2e, binary_2f]}
+          <Arrow {binary_2e} {binary_2f} />
+        {/key}
         {#key binary_2c}
           <FloorDisplay {binary_2c} />
         {/key}
-        <!-- <p>{binary_2c}</p> -->
         <DateTime />
       </div>
     </div>
