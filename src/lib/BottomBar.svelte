@@ -3,51 +3,70 @@
 
   let { bottomBars } = $props();
   let src = $state("");
+  let isRunning = $state(false);
   let timeoutId = null;
+  let destroyed = false;
 
-  function scheduleNextUpdate() {
-    // If displayBottomBars is still running, clearTimeout the previous timeout
-    if (timeoutId !== null) {
+  $effect(() => {
+    if (!bottomBars.some((flag) => flag === 1)) {
+      src = "";
+      isRunning = false;
+    } else if (!isRunning) {
+      startDisplay();
+    }
+  });
+
+  function startDisplay() {
+    if (destroyed) return;
+
+    isRunning = true;
+    displayNextBar(0);
+  }
+
+  function displayNextBar(index) {
+    if (destroyed || !isRunning) return;
+
+    if (timeoutId) {
       clearTimeout(timeoutId);
     }
 
-    // Schedule the next update after 1 second
-    timeoutId = setTimeout(() => {
-      if (bottomBars.every((flag) => flag === 0)) {
-        src = "";
+    // If we've reached the end, start over
+    if (index >= bottomBars.length) {
+      if (bottomBars.some((flag) => flag === 1)) {
+        displayNextBar(0);
       } else {
-        displayBottomBars().then(() => {
-          // Once displayBottomBars is done, schedule the next update
-          scheduleNextUpdate();
-        });
+        isRunning = false;
+        src = "";
       }
-    }, 1000);
+      return;
+    }
+
+    // If current bar is active, show it and wait
+    if (bottomBars[index] === 1) {
+      src = `assets/bottom-bars/bar${index}.png`;
+      timeoutId = setTimeout(() => {
+        displayNextBar(index + 1);
+      }, 1000);
+    } else {
+      // If current bar is inactive, immediately move to next
+      src = "";
+      displayNextBar(index + 1);
+    }
   }
 
   onMount(() => {
-    // Start the recursive timeout on component mount
-    scheduleNextUpdate();
+    if (bottomBars.some((flag) => flag === 1)) {
+      startDisplay();
+    }
   });
 
   onDestroy(() => {
-    // Clear the timeout when the component is destroyed
-    if (timeoutId !== null) {
+    destroyed = true;
+    isRunning = false;
+    if (timeoutId) {
       clearTimeout(timeoutId);
     }
   });
-
-  const sleep = (milliseconds) => {
-    return new Promise((resolve) => setTimeout(resolve, milliseconds));
-  };
-
-  async function displayBottomBars() {
-    for (let i = 0; i < bottomBars.length; i++) {
-      if (bottomBars[i] == 1) {
-        src = `/bottom-bars/bar${i}.png`;
-        await sleep(1000);
-      }
-    }
-  }
 </script>
 
 <img class="bottom-bar" {src} />
