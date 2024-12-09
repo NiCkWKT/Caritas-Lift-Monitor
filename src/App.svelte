@@ -56,8 +56,10 @@
   }
 
   function connectWebSocket() {
-    // ws = new WebSocket("ws://" + window.location.host + "/ws");
-    ws = new WebSocket("ws://localhost:8080/ws");
+    // For prod
+    ws = new WebSocket("ws://" + window.location.host + "/ws");
+    // For dev
+    // ws = new WebSocket("ws://localhost:8080/ws");
 
     ws.onopen = () => {
       console.log("WebSocket Connection established");
