@@ -1,4 +1,39 @@
-<img class="floor-info" src="assets/logos/LOGO_6.png" />
+<script>
+  let { binary_2c, binary_2e } = $props();
+  let floor = $state("LOGO_test.JPG"); // TODO: Default should be Caritas's logo
+  let src = $derived("assets/logos/" + floor);
+
+  let floorMapping = {
+    "000001": "LOGO_G.png",
+    "000010": "LOGO_1.png",
+    "000011": "LOGO_2.png",
+    "000100": "LOGO_3.png",
+    "000101": "LOGO_4.png",
+    "000110": "LOGO_5.png",
+    "000111": "LOGO_6.png",
+    "011011": "LOGO_LG1.png",
+    "011100": "LOGO_LG2.png",
+    "011101": "LOGO_LG3.png",
+    111010: "LOGO_LG4.png",
+    111011: "LOGO_LG5.png",
+  };
+
+  const value2c = parseInt(binary_2c, 2);
+  const maskedValue = value2c & 0b00111111;
+  const maskedBinary = maskedValue.toString(2).padStart(6, "0");
+  const floorImage = floorMapping[maskedBinary];
+
+  const value2e = parseInt(binary_2e, 2);
+  const isMoving = value2e & 1;
+
+  if (floorImage && isMoving == 0) {
+    floor = floorImage;
+  } else {
+    floor = "LOGO_test.JPG";
+  }
+</script>
+
+<img class="floor-info" {src} />
 
 <style>
   .floor-info {
