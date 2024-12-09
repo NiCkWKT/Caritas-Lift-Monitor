@@ -1,4 +1,4 @@
-<img class="arrow" src="/arrows/up.gif" />
+<img class="arrow" src="assets/arrows/up.gif" />
 
 <style>
   .arrow {

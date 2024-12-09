@@ -58,10 +58,10 @@
   const floorImage = floorMapping[maskedBinary];
 
   if (floorImage) {
-    src = `/floors/${floorImage}`;
+    src = `assets/floors/${floorImage}`;
     console.log(`Floor changed to: ${floorImage} (binary: ${maskedBinary})`);
   } else {
-    src = `/floors/1M.png`;
+    src = `assets/floors/1M.png`;
     console.log(`Unknown floor code: ${maskedBinary}`);
   }
 </script>

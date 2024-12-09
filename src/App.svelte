@@ -56,6 +56,7 @@
   }
 
   function connectWebSocket() {
+    // ws = new WebSocket("ws://" + window.location.host + "/ws");
     ws = new WebSocket("ws://localhost:8080/ws");
 
     ws.onopen = () => {
@@ -119,7 +120,7 @@
     </div>
     <div class="middle">
       <div class="top-bar"></div>
-      <img class="zone-table" src="/zones/zone1.png" />
+      <img class="zone-table" src="assets/zones/zone1.png" />
       {#key bottomBars}
         <BottomBar {bottomBars} />
       {/key}

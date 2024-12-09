@@ -1,4 +1,4 @@
-<img class="floor-info" src="/logos/LOGO_6.png" />
+<img class="floor-info" src="assets/logos/LOGO_6.png" />
 
 <style>
   .floor-info {
