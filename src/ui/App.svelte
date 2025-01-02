@@ -15,14 +15,15 @@
   let bottomBars = $state([0, 0, 0, 0, 0, 0, 0, 0]);
 
   onMount(() => {
-    connectWebSocket();
+    // connectWebSocket();
+    connectIpcRenderer();
   });
 
-  onDestroy(() => {
-    if (ws) {
-      ws.close();
-    }
-  });
+  // onDestroy(() => {
+  //   if (ws) {
+  //     ws.close();
+  //   }
+  // });
 
   function extract2dBottomBarFlags() {
     const value = parseInt(binary_2d, 2);
@@ -94,6 +95,52 @@
     ws.onerror = (error) => {
       console.log("WebSocket Error:", error);
     };
+  }
+
+  async function importIpcRenderer() {
+    if (!window.require) {
+      throw new Error("window.require is not defined");
+    }
+    const electron = window.require("electron");
+    return electron.ipcRenderer;
+  }
+
+  function connectIpcRenderer() {
+    console.log("Helllo");
+    importIpcRenderer().then((ipcRenderer) => {
+      ipcRenderer.on("serial-data", (event, data) => {
+        const control = data.controlByte;
+        const binaryValue = data.value;
+
+        switch (control) {
+          case "2c":
+            if (binaryValue !== binary_2c) {
+              binary_2c = binaryValue;
+            }
+            break;
+          case "2d":
+            if (binaryValue !== binary_2d) {
+              binary_2d = binaryValue;
+              extract2dBottomBarFlags();
+            }
+            break;
+          case "2e":
+            if (binaryValue !== binary_2e) {
+              binary_2e = binaryValue;
+              extract2eBottomBarFlags();
+            }
+            break;
+          case "2f":
+            if (binaryValue !== binary_2f) {
+              binary_2f = binaryValue;
+              extract2fBottomBarFlags();
+            }
+            break;
+          default:
+            console.log(`Error in receiving serial data, data: ${data}`);
+        }
+      });
+    });
   }
 </script>
 

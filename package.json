@@ -3,14 +3,20 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "main": "src/electron/main",
   "scripts": {
-    "dev": "vite",
+    "dev:ui": "vite",
+    "dev:electron": "electron .",
     "build": "vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^5.0.0",
+    "electron": "^33.2.1",
     "svelte": "^5.2.7",
     "vite": "^6.0.1"
+  },
+  "dependencies": {
+    "serialport": "^13.0.0"
   }
 }
