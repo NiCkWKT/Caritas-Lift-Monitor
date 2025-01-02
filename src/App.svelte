@@ -26,48 +26,37 @@
 
   function extract2dBottomBarFlags() {
     const value = parseInt(binary_2d, 2);
-    const arrFlag0 = (value >> 4) & 1;
-    const arrFlag1 = (value >> 5) & 1;
-
-    bottomBars[0] = arrFlag0 == 1 ? 1 : 0;
-    bottomBars[1] = arrFlag1 == 1 ? 1 : 0;
+    bottomBars[0] = (value >> 4) & 1;
+    bottomBars[1] = (value >> 5) & 1;
   }
 
   function extract2eBottomBarFlags() {
     const value = parseInt(binary_2e, 2);
-    const arrFlag2 = (value >> 2) & 1;
-
-    bottomBars[2] = arrFlag2 == 1 ? 1 : 0;
+    bottomBars[2] = (value >> 2) & 1;
   }
 
   function extract2fBottomBarFlags() {
     const value = parseInt(binary_2f, 2);
-    const arrFlag3 = (value >> 3) & 1;
-    const arrFlag4 = (value >> 4) & 1;
-    const arrFlag5 = (value >> 5) & 1;
-    const arrFlag6 = (value >> 6) & 1;
-    const arrFlag7 = (value >> 7) & 1;
-
-    bottomBars[3] = arrFlag3 == 1 ? 1 : 0;
-    bottomBars[4] = arrFlag4 == 1 ? 1 : 0;
-    bottomBars[5] = arrFlag5 == 1 ? 1 : 0;
-    bottomBars[6] = arrFlag6 == 1 ? 1 : 0;
-    bottomBars[7] = arrFlag7 == 1 ? 1 : 0;
+    bottomBars[3] = (value >> 3) & 1;
+    bottomBars[4] = (value >> 4) & 1;
+    bottomBars[5] = (value >> 5) & 1;
+    bottomBars[6] = (value >> 6) & 1;
+    bottomBars[7] = (value >> 7) & 1;
   }
 
   function connectWebSocket() {
     // For prod
-    ws = new WebSocket("ws://" + window.location.host + "/ws");
+    // ws = new WebSocket("ws://" + window.location.host + "/ws");
+
     // For dev
-    // ws = new WebSocket("ws://localhost:8080/ws");
+    ws = new WebSocket("ws://localhost:8080/ws");
 
     ws.onopen = () => {
-      console.log("WebSocket Connection established");
+      console.log("Connected to WebSocket backend");
     };
 
     ws.onmessage = (event) => {
       const [control, binaryValue] = event.data.split(",");
-      console.log(`Control bit: ${control}, Value: ${binaryValue}`);
       switch (control) {
         case "2c":
           if (binaryValue !== binary_2c) {

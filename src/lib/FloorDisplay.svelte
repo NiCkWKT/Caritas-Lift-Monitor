@@ -45,9 +45,9 @@
 
   let { binary_2c } = $props();
   let src = $state("");
+  let isHidden = $state(true);
 
   // Apply mask 00111111 to get last 6 bits
-  console.log(`Code: ${binary_2c}`);
   const value = parseInt(binary_2c, 2);
   const maskedValue = value & 0b00111111;
 
@@ -59,14 +59,15 @@
 
   if (floorImage) {
     src = `assets/floors/${floorImage}`;
-    console.log(`Floor changed to: ${floorImage} (binary: ${maskedBinary})`);
+    isHidden = false;
+    // console.log(`Floor changed to: ${floorImage} (binary: ${maskedBinary})`);
   } else {
-    src = `assets/floors/1M.png`;
-    console.log(`Unknown floor code: ${maskedBinary}`);
+    isHidden = true;
+    console.log(`Unknown floor: ${binary_2c}`);
   }
 </script>
 
-<img class="floor" {src} />
+<img class="floor" class:hidden={isHidden} {src} />
 
 <style>
   .floor {
@@ -75,5 +76,9 @@
     height: 250px;
     position: relative;
     object-fit: cover;
+  }
+
+  .hidden {
+    visibility: hidden;
   }
 </style>
