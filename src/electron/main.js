@@ -1,25 +1,94 @@
-import { app, BrowserWindow, screen } from "electron";
+import { app, BrowserWindow, screen, Menu, dialog } from "electron";
 import { SerialPort } from "serialport";
 import { join } from "path";
 import { format } from "url";
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
+let currentPort = null;
+
+async function listSerialPorts() {
+  try {
+    const ports = await SerialPort.list();
+    return ports;
+  } catch (err) {
+    console.error("Error listing ports:", err);
+    return [];
+  }
+}
+
+async function connectToPort(portPath) {
+  if (currentPort) {
+    currentPort.close();
+  }
+
+  currentPort = new SerialPort({
+    path: portPath,
+    baudRate: 9600,
+    dataBits: 8,
+    stopBits: 1,
+    parity: "none",
+  });
+
+  currentPort.on("open", () => {
+    console.log("Serial port opened:", portPath);
+  });
+
+  let isControl = true;
+  let controlByte;
+
+  currentPort.on("data", (data) => {
+    const buffer = Buffer.from(data);
+    if (isControl) {
+      if (buffer[0] >= 0x2c && buffer[0] <= 0x2f) {
+        controlByte = buffer[0].toString(16);
+        isControl = false;
+      }
+    } else {
+      let value = buffer[0].toString(2).padStart(8, "0");
+      if (mainWindow) {
+        mainWindow.webContents.send("serial-data", { controlByte, value });
+      }
+      isControl = true;
+    }
+  });
+
+  currentPort.on("error", (err) => {
+    console.error("Serial port error:", err);
+    dialog.showErrorBox(
+      "Serial Port Error",
+      `Error with port ${portPath}: ${err.message}`
+    );
+  });
+}
+
+async function createContextMenu() {
+  const ports = await listSerialPorts();
+  ports.push({
+    path: "/tmp/ttyUSB0",
+  });
+  console.log(ports);
+  if (ports.length === 0) {
+    dialog.showMessageBox(mainWindow, {
+      type: "info",
+      message: "No available serial ports",
+      buttons: ["OK"],
+    });
+    return;
+  }
+
+  const contextMenu = Menu.buildFromTemplate(
+    ports.map((port) => ({
+      label: `${port.path} - ${port.manufacturer || "Unknown"}`,
+      click: () => connectToPort(port.path),
+    }))
+  );
+
+  return contextMenu;
+}
 
 function createWindow() {
   const displays = screen.getAllDisplays();
-  console.log(displays);
 
-  const totalWidth = displays.reduce(
-    (sum, display) => sum + display.size.width,
-    0
-  );
-  const minHeight = Math.min(...displays.map((display) => display.size.height));
-
-  console.log(totalWidth);
-  console.log(minHeight);
-  // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 1920,
     height: 1080,
@@ -38,7 +107,6 @@ function createWindow() {
     height: 768,
   });
 
-  // and load the index.html of the app.
   mainWindow.loadURL(
     format({
       pathname: join(app.getAppPath(), "dist-ui/index.html"),
@@ -47,73 +115,46 @@ function createWindow() {
     })
   );
 
-  // mainWindow.maximize();
+  mainWindow.webContents.on("context-menu", async () => {
+    const menu = await createContextMenu();
+    if (menu) {
+      menu.popup();
+    }
+  });
 
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
-
-  // Emitted when the window is closed.
   mainWindow.on("closed", function () {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
     mainWindow = null;
   });
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   createWindow();
 
-  const port = new SerialPort({
-    path: "/tmp/ttyUSB0",
-    baudRate: 9600,
-    dataBits: 8,
-    stopBits: 1,
-    parity: "none",
-  });
-
-  port.on("open", () => {
-    console.log("Serial port opened");
-  });
-
-  let isControl = true;
-  let controlByte;
-
-  // Read from serial port
-  port.on("data", (data) => {
-    const buffer = Buffer.from(data);
-    if (isControl) {
-      if (buffer[0] >= 0x2c && buffer[0] <= 0x2f) {
-        controlByte = buffer[0].toString(16);
-        isControl = false;
-      }
-    } else {
-      let value = buffer[0].toString(2).padStart(8, "0");
-      mainWindow.webContents.send("serial-data", { controlByte, value });
-      isControl = true;
-    }
-  });
+  // Connect to the first available port on startup
+  const ports = await listSerialPorts();
+  if (ports.length > 0) {
+    await connectToPort(ports[0].path);
+  } else {
+    dialog.showMessageBox(mainWindow, {
+      type: "info",
+      message: "No available serial ports",
+      buttons: ["OK"],
+    });
+  }
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
 });
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-// app.on("ready", createWindow);
-
-// Quit when all windows are closed.
 app.on("window-all-closed", function () {
-  // On OS X it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
+  if (currentPort) {
+    currentPort.close();
+  }
   app.quit();
 });
 
 app.on("activate", function () {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) {
     createWindow();
   }
