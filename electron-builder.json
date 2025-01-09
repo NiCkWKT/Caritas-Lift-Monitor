@@ -1,0 +1,11 @@
+{
+  "appId": "com.hkces.caritas-lift-monitor",
+  "files": ["src/electron", "dist-ui"],
+  "icon": "./caritas.png",
+  "mac": {
+    "target": "dmg"
+  },
+  "win": {
+    "target": ["portable", "msi"]
+  }
+}

@@ -3,16 +3,19 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "main": "src/electron/main",
+  "main": "src/electron/main.js",
   "scripts": {
     "dev:ui": "vite",
     "dev:electron": "electron .",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "dist:win": "npm run build && electron-builder --win --x64",
+    "dist:mac": "npm run build && electron-builder --mac --x64"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^5.0.0",
     "electron": "^33.2.1",
+    "electron-builder": "^25.1.8",
     "svelte": "^5.2.7",
     "vite": "^6.0.1"
   },
