@@ -63,27 +63,54 @@ async function connectToPort(portPath) {
 
 async function createContextMenu() {
   const ports = await listSerialPorts();
+
   ports.push({
     path: "/tmp/ttyUSB0",
   });
-  console.log(ports);
-  if (ports.length === 0) {
+  const menuTemplate = [
+    {
+      label: "Zone Images",
+      submenu: [
+        {
+          label: "Zone 1",
+          click: () => {
+            if (mainWindow) {
+              mainWindow.webContents.send("change-zone", "zone1.png");
+            }
+          },
+        },
+        {
+          label: "Zone 2",
+          click: () => {
+            if (mainWindow) {
+              mainWindow.webContents.send("change-zone", "zone2.png");
+            }
+          },
+        },
+        { type: "separator" }, // Adds a line separator in the menu
+      ],
+    },
+  ];
+
+  // Add serial port items
+  if (ports.length > 0) {
+    menuTemplate.push({ type: "separator" });
+    menuTemplate.push({
+      label: "Serial Ports",
+      submenu: ports.map((port) => ({
+        label: `${port.path} - ${port.manufacturer || "Unknown"}`,
+        click: () => connectToPort(port.path),
+      })),
+    });
+  } else {
     dialog.showMessageBox(mainWindow, {
       type: "info",
       message: "No available serial ports",
       buttons: ["OK"],
     });
-    return;
   }
 
-  const contextMenu = Menu.buildFromTemplate(
-    ports.map((port) => ({
-      label: `${port.path} - ${port.manufacturer || "Unknown"}`,
-      click: () => connectToPort(port.path),
-    }))
-  );
-
-  return contextMenu;
+  return Menu.buildFromTemplate(menuTemplate);
 }
 
 function createWindow() {

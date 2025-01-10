@@ -10,6 +10,7 @@
   let binary_2d = $state("00000000");
   let binary_2e = $state("00000000");
   let binary_2f = $state("00000000");
+  let currentZoneImage = $state("zone2.png");
 
   let bottomBars = $state([0, 0, 0, 0, 0, 0, 0, 0]);
 
@@ -45,8 +46,13 @@
     return electron.ipcRenderer;
   }
 
+  async function setupZoneImageListener(ipcRenderer) {
+    ipcRenderer.on("change-zone", (event, imageName) => {
+      currentZoneImage = imageName;
+    });
+  }
+
   function connectIpcRenderer() {
-    console.log("Helllo");
     importIpcRenderer().then((ipcRenderer) => {
       ipcRenderer.on("serial-data", (event, data) => {
         const control = data.controlByte;
@@ -80,6 +86,9 @@
             console.log(`Error in receiving serial data, data: ${data}`);
         }
       });
+
+      // Add zone image listener
+      setupZoneImageListener(ipcRenderer);
     });
   }
 </script>
@@ -99,7 +108,7 @@
     </div>
     <div class="middle">
       <div class="top-bar"></div>
-      <img class="zone-table" src="assets/zones/zone1.png" />
+      <img class="zone-table" src={`assets/zones/${currentZoneImage}`} />
       {#key bottomBars}
         <BottomBar {bottomBars} />
       {/key}
@@ -167,7 +176,7 @@
   .zone-table {
     flex-shrink: 0;
     width: 730px;
-    height: 584px;
+    /* height: 584px; */
     position: relative;
     object-fit: cover;
   }
