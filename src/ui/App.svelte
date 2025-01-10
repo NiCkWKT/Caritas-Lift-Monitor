@@ -1,12 +1,11 @@
 <script>
-  import { onMount, onDestroy } from "svelte";
+  import { onMount } from "svelte";
   import Arrow from "./lib/Arrow.svelte";
   import BottomBar from "./lib/BottomBar.svelte";
   import DateTime from "./lib/DateTime.svelte";
   import FloorDisplay from "./lib/FloorDisplay.svelte";
   import FloorInfo from "./lib/FloorInfo.svelte";
 
-  let ws;
   let binary_2c = $state("00000000");
   let binary_2d = $state("00000000");
   let binary_2e = $state("00000000");
@@ -15,15 +14,8 @@
   let bottomBars = $state([0, 0, 0, 0, 0, 0, 0, 0]);
 
   onMount(() => {
-    // connectWebSocket();
     connectIpcRenderer();
   });
-
-  // onDestroy(() => {
-  //   if (ws) {
-  //     ws.close();
-  //   }
-  // });
 
   function extract2dBottomBarFlags() {
     const value = parseInt(binary_2d, 2);
@@ -43,58 +35,6 @@
     bottomBars[5] = (value >> 5) & 1;
     bottomBars[6] = (value >> 6) & 1;
     bottomBars[7] = (value >> 7) & 1;
-  }
-
-  function connectWebSocket() {
-    // For prod
-    // ws = new WebSocket("ws://" + window.location.host + "/ws");
-
-    // For dev
-    ws = new WebSocket("ws://localhost:8080/ws");
-
-    ws.onopen = () => {
-      console.log("Connected to WebSocket backend");
-    };
-
-    ws.onmessage = (event) => {
-      const [control, binaryValue] = event.data.split(",");
-      switch (control) {
-        case "2c":
-          if (binaryValue !== binary_2c) {
-            binary_2c = binaryValue;
-          }
-          break;
-        case "2d":
-          if (binaryValue !== binary_2d) {
-            binary_2d = binaryValue;
-            extract2dBottomBarFlags();
-          }
-          break;
-        case "2e":
-          if (binaryValue !== binary_2e) {
-            binary_2e = binaryValue;
-            extract2eBottomBarFlags();
-          }
-          break;
-        case "2f":
-          if (binaryValue !== binary_2f) {
-            binary_2f = binaryValue;
-            extract2fBottomBarFlags();
-          }
-          break;
-        default:
-          console.log(`Error in WebSocket backend, data: ${event.data}`);
-      }
-    };
-
-    ws.onclose = () => {
-      console.log("WebSocket Connection closed. Reconnecting...");
-      setTimeout(connectWebSocket, 1000);
-    };
-
-    ws.onerror = (error) => {
-      console.log("WebSocket Error:", error);
-    };
   }
 
   async function importIpcRenderer() {

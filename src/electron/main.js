@@ -88,7 +88,7 @@ async function createContextMenu() {
 
 function createWindow() {
   const displays = screen.getAllDisplays();
-
+  // console.log(displays);
   mainWindow = new BrowserWindow({
     width: 1920,
     height: 1080,
