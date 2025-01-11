@@ -1,10 +1,12 @@
-import { app, BrowserWindow, screen, Menu, dialog } from "electron";
-import { SerialPort } from "serialport";
-import { join } from "path";
-import { format } from "url";
+const { app, BrowserWindow, screen, Menu, dialog } = require("electron");
+const { SerialPort } = require("serialport");
+const { join } = require("path");
+const { format } = require("url");
 
 let mainWindow;
 let currentPort = null;
+
+if (require("electron-squirrel-startup")) app.quit();
 
 async function listSerialPorts() {
   try {
