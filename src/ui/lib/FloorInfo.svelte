@@ -1,5 +1,5 @@
 <script>
-  let { binary_2c, binary_2e } = $props();
+  let { binary_2c, binary_2e, binary_2f } = $props();
   let floor = $state("LOGO_caritas.png");
   let src = $derived("assets/logos/" + floor);
 
@@ -24,11 +24,15 @@
   const floorImage = floorMapping[maskedBinary];
 
   const value2e = parseInt(binary_2e, 2);
-  const isMoving = value2e & 1;
+  // const isMoving = value2e & 1;
+  const isArrival = (value2e >> 4) & 1;
 
-  if (floorImage && isMoving == 0) {
+  const value2f = parseInt(binary_2f, 2);
+  const isDoorClosing = (value2f >> 2) & 1;
+
+  if (floorImage && isArrival == 1) {
     floor = floorImage;
-  } else {
+  } else if (isDoorClosing == 1) {
     floor = "LOGO_caritas.png";
   }
 </script>

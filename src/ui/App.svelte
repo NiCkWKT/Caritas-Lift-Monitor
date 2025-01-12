@@ -114,8 +114,8 @@
       {/key}
     </div>
     <div class="right">
-      {#key [binary_2c, binary_2e]}
-        <FloorInfo {binary_2c} {binary_2e} />
+      {#key [binary_2c, binary_2e, binary_2f]}
+        <FloorInfo {binary_2c} {binary_2e} {binary_2f} />
       {/key}
     </div>
   </div>
