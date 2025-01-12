@@ -1,5 +1,6 @@
 <script>
   import { onMount } from "svelte";
+  import { writable } from "svelte/store";
   import Arrow from "./lib/Arrow.svelte";
   import BottomBar from "./lib/BottomBar.svelte";
   import DateTime from "./lib/DateTime.svelte";
@@ -13,6 +14,7 @@
   let currentZoneImage = $state("zone2.png");
 
   let bottomBars = $state([0, 0, 0, 0, 0, 0, 0, 0]);
+  let hasArrived = writable(false);
 
   onMount(() => {
     connectIpcRenderer();
@@ -115,7 +117,7 @@
     </div>
     <div class="right">
       {#key [binary_2c, binary_2e, binary_2f]}
-        <FloorInfo {binary_2c} {binary_2e} {binary_2f} />
+        <FloorInfo {binary_2c} {binary_2e} {binary_2f} {hasArrived} />
       {/key}
     </div>
   </div>

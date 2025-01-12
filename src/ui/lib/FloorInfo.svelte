@@ -1,8 +1,7 @@
 <script>
-  let { binary_2c, binary_2e, binary_2f } = $props();
+  let { binary_2c, binary_2e, binary_2f, hasArrived } = $props();
   let floor = $state("LOGO_caritas.png");
   let src = $derived("assets/logos/" + floor);
-  let hasArrived = $state(false);
 
   let floorMapping = {
     "000001": "LOGO_G.png",
@@ -33,10 +32,10 @@
 
   if (floorImage && isArrival === 1) {
     floor = floorImage;
-    hasArrived = true;
+    hasArrived.set(true);
   } else if (isDoorClosing === 1) {
     floor = "LOGO_caritas.png";
-    hasArrived = false;
+    hasArrived.set(false);
   } else if (hasArrived && floorImage) {
     floor = floorImage;
   }
