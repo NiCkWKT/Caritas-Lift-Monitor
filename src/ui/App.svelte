@@ -11,7 +11,7 @@
   let binary_2d = $state("00000000");
   let binary_2e = $state("00000000");
   let binary_2f = $state("00000000");
-  let currentZoneImage = $state("zone2.png");
+  let currentZoneImage = $state("zone1.png");
 
   let bottomBars = $state([0, 0, 0, 0, 0, 0, 0, 0]);
   let hasArrived = writable(false);
