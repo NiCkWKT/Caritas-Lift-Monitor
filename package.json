@@ -1,7 +1,7 @@
 {
   "name": "caritas-lift-monitor",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "main": "src/electron/main.js",
   "scripts": {
     "dev:ui": "vite",
