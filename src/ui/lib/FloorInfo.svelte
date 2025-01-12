@@ -1,6 +1,6 @@
 <script>
   let { binary_2c, binary_2e } = $props();
-  let floor = $state("LOGO_test.JPG"); // TODO: Default should be Caritas's logo
+  let floor = $state("LOGO_caritas.png");
   let src = $derived("assets/logos/" + floor);
 
   let floorMapping = {
