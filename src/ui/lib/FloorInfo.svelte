@@ -36,7 +36,7 @@
   } else if (isDoorClosing === 1) {
     floor = "LOGO_caritas.png";
     hasArrived.set(false);
-  } else if (hasArrived && floorImage) {
+  } else if ($hasArrived && floorImage) {
     floor = floorImage;
   }
 </script>
