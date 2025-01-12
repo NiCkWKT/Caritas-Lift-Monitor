@@ -4,7 +4,7 @@ const { FuseV1Options, FuseVersion } = require("@electron/fuses");
 module.exports = {
   packagerConfig: {
     asar: true,
-    icon: "./app-logo",
+    icon: "/icons/app-logo",
   },
   rebuildConfig: {},
   makers: [
@@ -13,7 +13,9 @@ module.exports = {
       config: {
         authors: "company",
         description: "lift monitor",
-        setupIcon: "./app-logo.ico",
+        iconUrl:
+          "https://raw.githubusercontent.com/NiCkWKT/Assets/refs/heads/main/app-logo.ico",
+        setupIcon: "icons/app-logo.ico",
       },
     },
     {
