@@ -142,6 +142,21 @@ async function createContextMenu() {
     });
   }
 
+  // Add separator and quit option at the bottom
+  menuTemplate.push(
+    { type: "separator" },
+    {
+      label: "Quit",
+      accelerator: process.platform === "darwin" ? "Command+Q" : "Alt+F4",
+      click: () => {
+        if (currentPort) {
+          currentPort.close();
+        }
+        app.quit();
+      },
+    }
+  );
+
   return Menu.buildFromTemplate(menuTemplate);
 }
 
