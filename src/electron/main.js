@@ -140,7 +140,22 @@ async function createContextMenu() {
   ];
 
   // Add serial port items
-  if (ports.length > 0) {
+  // if (ports.length > 0) {
+  //   menuTemplate.push({ type: "separator" });
+  //   menuTemplate.push({
+  //     label: "Serial Ports",
+  //     submenu: ports.map((port) => ({
+  //       label: `${port.path} - ${port.manufacturer || "Unknown"}`,
+  //       click: () => connectToPort(port.path),
+  //     })),
+  //   });
+  // } else {
+  //   dialog.showMessageBox(mainWindow, {
+  //     type: "info",
+  //     message: "No available serial ports",
+  //     buttons: ["OK"],
+  //   });
+
     menuTemplate.push({ type: "separator" });
     menuTemplate.push({
       label: "Serial Ports",
@@ -148,12 +163,6 @@ async function createContextMenu() {
         label: `${port.path} - ${port.manufacturer || "Unknown"}`,
         click: () => connectToPort(port.path),
       })),
-    });
-  } else {
-    dialog.showMessageBox(mainWindow, {
-      type: "info",
-      message: "No available serial ports",
-      buttons: ["OK"],
     });
   }
 
