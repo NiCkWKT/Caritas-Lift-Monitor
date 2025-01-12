@@ -21,7 +21,7 @@ if (process.platform === "win32") {
         return true;
       case "--squirrel-uninstall": {
         // Clean up any app data
-        const appData = join(process.env.APPDATA, "CaritasLift");
+        const appData = join(process.env.APPDATA, "CaritasLiftMonitor");
         if (require("fs").existsSync(appData)) {
           require("fs").rmdirSync(appData, { recursive: true });
         }
@@ -43,7 +43,7 @@ async function listSerialPorts() {
     const ports = await SerialPort.list();
     return ports;
   } catch (err) {
-    console.error("Error listing ports:", err);
+    // console.error("Error listing ports:", err);
     return [];
   }
 }
@@ -62,7 +62,7 @@ async function connectToPort(portPath) {
   });
 
   currentPort.on("open", () => {
-    console.log("Serial port opened:", portPath);
+    // console.log("Serial port opened:", portPath);
   });
 
   let isControl = true;
@@ -85,7 +85,7 @@ async function connectToPort(portPath) {
   });
 
   currentPort.on("error", (err) => {
-    console.error("Serial port error:", err);
+    // console.error("Serial port error:", err);
     dialog.showErrorBox(
       "Serial Port Error",
       `Error with port ${portPath}: ${err.message}`
@@ -96,9 +96,9 @@ async function connectToPort(portPath) {
 async function createContextMenu() {
   const ports = await listSerialPorts();
 
-  ports.push({
-    path: "/tmp/ttyUSB0",
-  });
+  // ports.push({
+  //   path: "/tmp/ttyUSB0",
+  // });
   const menuTemplate = [
     {
       label: "Zone Images",

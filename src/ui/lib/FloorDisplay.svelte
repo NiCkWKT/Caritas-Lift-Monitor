@@ -63,7 +63,7 @@
     // console.log(`Floor changed to: ${floorImage} (binary: ${maskedBinary})`);
   } else {
     isHidden = true;
-    console.log(`Unknown floor: ${binary_2c}`);
+    // console.log(`Unknown floor: ${binary_2c}`);
   }
 </script>
 
