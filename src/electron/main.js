@@ -21,9 +21,24 @@ if (process.platform === "win32") {
         return true;
       case "--squirrel-uninstall": {
         // Clean up any app data
-        const appData = join(process.env.APPDATA, "CaritasLiftMonitor");
-        if (require("fs").existsSync(appData)) {
-          require("fs").rmdirSync(appData, { recursive: true });
+        const fs = require("fs");
+        const directories = [
+          // Roaming directory
+          join(process.env.APPDATA, "CaritasLiftMonitor"),
+          // Local directory
+          join(process.env.LOCALAPPDATA, "CaritasLiftMonitor"),
+          // Local directory-temp
+          join(process.env.LOCALAPPDATA, "CaritasLiftMonitor-updater"),
+        ];
+
+        for (const dir of directories) {
+          if (fs.existsSync(dir)) {
+            try {
+              fs.rmdirSync(dir, { recursive: true, force: true });
+            } catch (err) {
+              console.error(`Failed to remove directory ${dir}:`, err);
+            }
+          }
         }
         return true;
       }
