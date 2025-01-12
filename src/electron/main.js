@@ -6,7 +6,37 @@ const { format } = require("url");
 let mainWindow;
 let currentPort = null;
 
+// Handle Squirrel events for Windows installer
 if (require("electron-squirrel-startup")) app.quit();
+
+// Handle installation events
+if (process.platform === "win32") {
+  const handleStartupEvent = () => {
+    const squirrelCommand = process.argv[1];
+    switch (squirrelCommand) {
+      case "--squirrel-install":
+      case "--squirrel-updated":
+        // Install desktop and start menu shortcuts
+        require("electron-squirrel-startup");
+        return true;
+      case "--squirrel-uninstall": {
+        // Clean up any app data
+        const appData = join(process.env.APPDATA, "Your App Name");
+        if (require("fs").existsSync(appData)) {
+          require("fs").rmdirSync(appData, { recursive: true });
+        }
+        return true;
+      }
+      case "--squirrel-obsolete":
+        app.quit();
+        return true;
+    }
+  };
+
+  if (handleStartupEvent()) {
+    app.quit();
+  }
+}
 
 async function listSerialPorts() {
   try {
