@@ -46,7 +46,7 @@
       src = `assets/bottom-bars/bar${index}.png`;
       timeoutId = setTimeout(() => {
         displayNextBar(index + 1);
-      }, 1000);
+      }, 2000);
     } else {
       // If current bar is inactive, immediately move to next
       src = "";

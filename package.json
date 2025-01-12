@@ -1,5 +1,5 @@
 {
-  "name": "svelte-lift",
+  "name": "caritas-lift-monitor",
   "private": true,
   "version": "0.0.0",
   "main": "src/electron/main.js",

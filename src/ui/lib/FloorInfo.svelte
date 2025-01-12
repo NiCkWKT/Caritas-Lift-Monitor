@@ -29,7 +29,7 @@
   if (floorImage && isMoving == 0) {
     floor = floorImage;
   } else {
-    floor = "LOGO_test.JPG";
+    floor = "LOGO_caritas.png";
   }
 </script>
 

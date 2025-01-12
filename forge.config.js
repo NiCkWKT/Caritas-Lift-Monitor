@@ -4,6 +4,13 @@ const { FuseV1Options, FuseVersion } = require("@electron/fuses");
 module.exports = {
   packagerConfig: {
     asar: true,
+    executableName: "Caritas Lift Monitor",
+    win32metadata: {
+      CompanyName: "company",
+      FileDescription: "Lift monitor",
+      ProductName: "Caritas Lift Monitor",
+      InternalName: "Caritas Lift Monitor",
+    },
     icon: "/icons/app-logo",
   },
   rebuildConfig: {},
@@ -11,6 +18,7 @@ module.exports = {
     {
       name: "@electron-forge/maker-squirrel",
       config: {
+        name: "Caritas Lift Monitor",
         authors: "company",
         description: "lift monitor",
         iconUrl:

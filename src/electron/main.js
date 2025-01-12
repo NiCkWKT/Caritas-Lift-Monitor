@@ -21,7 +21,7 @@ if (process.platform === "win32") {
         return true;
       case "--squirrel-uninstall": {
         // Clean up any app data
-        const appData = join(process.env.APPDATA, "Your App Name");
+        const appData = join(process.env.APPDATA, "CaritasLift");
         if (require("fs").existsSync(appData)) {
           require("fs").rmdirSync(appData, { recursive: true });
         }
