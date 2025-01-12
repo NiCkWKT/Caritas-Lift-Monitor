@@ -11,7 +11,7 @@ module.exports = {
       ProductName: "Caritas Lift Monitor",
       InternalName: "Caritas Lift Monitor",
     },
-    icon: "/icons/app-logo",
+    icon: "./icons/app-logo",
   },
   rebuildConfig: {},
   makers: [
@@ -23,7 +23,7 @@ module.exports = {
         description: "lift monitor",
         iconUrl:
           "https://raw.githubusercontent.com/NiCkWKT/Assets/refs/heads/main/app-logo.ico",
-        setupIcon: "icons/app-logo.ico",
+        setupIcon: "./icons/app-logo.ico",
       },
     },
     {
