@@ -156,15 +156,14 @@ async function createContextMenu() {
   //     buttons: ["OK"],
   //   });
 
-    menuTemplate.push({ type: "separator" });
-    menuTemplate.push({
-      label: "Serial Ports",
-      submenu: ports.map((port) => ({
-        label: `${port.path} - ${port.manufacturer || "Unknown"}`,
-        click: () => connectToPort(port.path),
-      })),
-    });
-  }
+  menuTemplate.push({ type: "separator" });
+  menuTemplate.push({
+    label: "Serial Ports",
+    submenu: ports.map((port) => ({
+      label: `${port.path} - ${port.manufacturer || "Unknown"}`,
+      click: () => connectToPort(port.path),
+    })),
+  });
 
   // Add separator and quit option at the bottom
   menuTemplate.push(
