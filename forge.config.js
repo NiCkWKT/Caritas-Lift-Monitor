@@ -6,7 +6,7 @@ module.exports = {
     asar: true,
     executableName: "CaritasLiftMonitor",
     win32metadata: {
-      CompanyName: "company",
+      CompanyName: "Caritas",
       FileDescription: "Caritas Lift Monitor",
       ProductName: "Caritas Lift Monitor",
       InternalName: "CaritasLiftMonitor",
@@ -20,9 +20,9 @@ module.exports = {
       config: {
         name: "CaritasLiftMonitor",
         exe: "CaritasLiftMonitor.exe",
-        setupExe: 'CaritasLiftMonitorSetup.exe',
-        shortcutName: 'Caritas Lift Monitor',
-        authors: "company",
+        setupExe: "CaritasLiftMonitorSetup.exe",
+        shortcutName: "Caritas Lift Monitor",
+        authors: "Caritas",
         description: "Caritas Lift Monitor",
         iconUrl:
           "https://raw.githubusercontent.com/NiCkWKT/Assets/refs/heads/main/app-logo.ico",
