@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "dist:win": "electron-builder --win --x64",
     "dist:mac": "electron-builder --mac --x64",
-    "dist:deb": "electron-builder --linux deb --x64",
+    "dist:deb": "electron-forge make --platform linux --arch x64 --targets @electron-forge/maker-deb",
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make"
