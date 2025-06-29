@@ -11,7 +11,7 @@ module.exports = {
       ProductName: "Caritas Lift Monitor",
       InternalName: "CaritasLiftMonitor",
     },
-    icon: "./icons/app-logo",
+    icon: "./icons/app-logo", // Base icon path (without extension)
   },
   rebuildConfig: {},
   makers: [
@@ -35,7 +35,17 @@ module.exports = {
     },
     {
       name: "@electron-forge/maker-deb",
-      config: {},
+      config: {
+        options: {
+          maintainer: "Caritas",
+          icon: "./icons/app-logo.png", // PNG icon for Debian (256x256 recommended)
+          categories: ["Utility"],
+          desktopName: "Caritas Lift Monitor",
+          description: "Caritas Lift Monitor for tracking lift operations",
+          bin: "CaritasLiftMonitor",
+          mimeType: ["application/x-caritas-lift-monitor"],
+        },
+      },
     },
     {
       name: "@electron-forge/maker-rpm",
@@ -47,8 +57,6 @@ module.exports = {
       name: "@electron-forge/plugin-auto-unpack-natives",
       config: {},
     },
-    // Fuses are used to enable/disable various Electron functionality
-    // at package time, before code signing the application
     new FusesPlugin({
       version: FuseVersion.V1,
       [FuseV1Options.RunAsNode]: false,
